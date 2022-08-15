@@ -1,6 +1,30 @@
-type ExampleEntity @entity {
+type Account @entity {
   id: ID!
-  count: BigInt!
-  sender: Bytes! # address
-  owner: Bytes! # address
+  version: BigInt!
+  accountID: BigInt!
+  # Smart account address
+  address: Bytes!
+  # Address of the DSA creator
+  creator: Bytes!
+  # Total transactions of the DSA
+  transactionsCount: BigInt!
+  # Cast event data
+  approvals: [ApprovalEvent!]!
+}
+
+type ApprovalEvent @entity {
+  id: ID!
+  token: Token!
+  from: Bytes!
+  # to or the spender address
+  to: Bytes!
+  # value approved or transaferred
+  value: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  name: String
+  symbol: String
+  decimals: BigInt
 }

@@ -1,35 +1,51 @@
-specVersion: 0.0.1
+specVersion: 0.0.5
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: undefined
-    network: mainnet
+    name: InstaIndex
+    network: arbitrum-one
     source:
-      address: "0x2971AdFa57b20E5a416aE5a708A8655A9c74f723"
       abi: InstaIndex
+      address: "0x1eE00C305C51Ff3bE60162456A9B533C07cD9288"
+      startBlock: 337405
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - LogAccountCreated
-        - LogNewAccount
-        - LogNewCheck
-        - LogNewMaster
-        - LogUpdateMaster
+        - Account
+        - ApprovalEvent
+        - Token
       abis:
         - name: InstaIndex
           file: ./abis/InstaIndex.json
+        - name: InstaList
+          file: ./abis/InstaList.json
+        - name: InstaAccount
+          file: ./abis/InstaAccount.json
       eventHandlers:
-        - event: LogAccountCreated(address,indexed address,indexed address,indexed address)
+        - event: LogAccountCreated(address,indexed address,indexed address,indexed
+            address)
           handler: handleLogAccountCreated
-        - event: LogNewAccount(indexed address,indexed address,indexed address)
-          handler: handleLogNewAccount
-        - event: LogNewCheck(indexed uint256,indexed address)
-          handler: handleLogNewCheck
-        - event: LogNewMaster(indexed address)
-          handler: handleLogNewMaster
-        - event: LogUpdateMaster(indexed address)
-          handler: handleLogUpdateMaster
       file: ./src/insta-index.ts
+  - kind: ethereum/contract
+    name: ERC20
+    network: arbitrum-one
+    source:
+      abi: ERC20
+      startBlock: 337405
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ApprovalEvent
+        - Token
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+      file: ./src/erc20.ts
